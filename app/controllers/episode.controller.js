@@ -1,36 +1,40 @@
 const db = require("../models");
+const Episode = db.episodes;
 const Character = db.characters;
+const Place = db.places;
 
-// Crear y guardar un nuevo personaje
+// Crear y guardar un nuevo episodio
 exports.create = (req, res) => {
     // Validate request
     if (!req.body._id) {
       res.status(400).send({ message: "Mensaje vacio" });
       return;
     }
-    // Crear un personaje
-    const character = new Character({
-      _id: req.body._id,
-      name: req.body.name,
-      gender: req.body.gender,
-      age: req.body.age,
-      species: req.body.species,
-      occupation: req.body.occupation,
-      image: req.body.image,
-      location: req.body.location,
-      isAlive: req.body.isAlive ? req.body.isAlive : false
+
+    console.log("******"+req.body._id);
+    console.log("******"+req.body.name);
+    console.log("******"+req.body.season);
+    console.log("******"+req.body._idCharacter);
+    console.log("******"+req.body._idPlace);
+    // Crear un episodio
+    const episode = new Episode({
+        _id: req.body._id,
+        name: req.body.name,
+        season: req.body.season,
+        _idCharacter: req.body._idCharacter,
+        _idPlace: req.body._idPlace
     });
 
-    // Guardar el personaje en la BDD
-    character
-      .save(character)
+    // Guardar el episodio en la BDD
+    episode
+      .save(episode)
       .then(data => {
         res.send(data);
       })
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Ha ocurrido un error al crear un nuevo personaje."
+            err.message || "Ha ocurrido un error al crear un nuevo episodio."
         });
       });
   };
@@ -40,19 +44,19 @@ exports.create = (req, res) => {
     const _id = req.query._id;
     var condition = _id ? { _id: { $regex: new RegExp(_id), $options: "i" } } : {};
   
-    Character.find(condition)
+    Episode.find(condition)
       .then(data => {
         res.send(data);
       })
       .catch(err => {
         res.status(500).send({
           message:
-            err.message || "Error al listar los personajes"
+            err.message || "Error al listar los Episodios"
         });
       });
   };
 
-// Actualizar un personaje por id en la petición
+// Actualizar un episodio por id en la petición
 exports.update = (req, res) => {
     if (!req.body) {
       return res.status(400).send({
@@ -62,40 +66,40 @@ exports.update = (req, res) => {
   
     const _id = req.body._id;
   
-    Character.findByIdAndUpdate(_id, req.body, { useFindAndModify: false })
+    Episode.findByIdAndUpdate(_id, req.body, { useFindAndModify: false })
       .then(data => {
         if (!data) {
           res.status(404).send({
-            message: `No se puede actualizar el personaje con el id=${_id}. `
+            message: `No se puede actualizar el episodio con el id=${_id}. `
           });
-        } else res.send({ message: "Personaje actualizado existosamente" });
+        } else res.send({ message: "episodio actualizado existosamente" });
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error al actualizar el personaje con el id=" + _id
+          message: "Error al actualizar el episodio con el id=" + _id
         });
       });
   };
 
-//Eliminar un personaje por id
+//Eliminar un episodio por id
 exports.delete = (req, res) => {
     const _id = req.body._id;
   
-    Character.findByIdAndRemove(_id)
+    Episode.findByIdAndRemove(_id)
       .then(data => {
         if (!data) {
           res.status(404).send({
-            message: `No se puede borrar el personaje con el id=${_id}.`
+            message: `No se puede borrar el episodio con el id=${_id}.`
           });
         } else {
           res.send({
-            message: "Personaje Borrado Exitosamente!"
+            message: "Episodio Borrado Exitosamente!"
           });
         }
       })
       .catch(err => {
         res.status(500).send({
-          message: "no se puede borrar el personaje con el id=" + _id
+          message: "no se puede borrar el episodio con el id=" + _id
         });
       });
   };

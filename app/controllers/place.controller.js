@@ -4,13 +4,13 @@ const Place = db.places;
 // Crear y guardar un nuevo lugar
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.id) {
+    if (!req.body._id) {
       res.status(400).send({ message: "Mensaje vacio" });
       return;
     }
     // Crear un lugar
     const place = new Place({
-        _id: req.body.id,
+        _id: req.body._id,
         name: req.body.name,
         location: req.body.location,
         nativeSpecies: req.body.nativeSpecies,
@@ -34,7 +34,7 @@ exports.create = (req, res) => {
 
   //Recuperar los elementos de la BDD
   exports.findAll = (req, res) => {
-    const _id = req.query.id;
+    const _id = req.query._id;
     var condition = _id ? { _id: { $regex: new RegExp(_id), $options: "i" } } : {};
   
     Place.find(condition)
@@ -57,32 +57,33 @@ exports.update = (req, res) => {
       });
     }
   
-    const id = req.params.id;
-  
-    Place.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    const _id = req.body._id;
+
+
+    Place.findByIdAndUpdate(_id, req.body, { useFindAndModify: false })
       .then(data => {
         if (!data) {
           res.status(404).send({
-            message: `No se puede actualizar el lugar con el id=${id}. `
+            message: `No se puede actualizar el lugar con el id=${_id}. `
           });
         } else res.send({ message: "lugar actualizado existosamente" });
       })
       .catch(err => {
         res.status(500).send({
-          message: "Error al actualizar el lugar con el id=" + id
+          message: "Error al actualizar el lugar con el id=" + _id
         });
       });
   };
 
 //Eliminar un lugar por id
 exports.delete = (req, res) => {
-    const id = req.params.id;
+    const _id = req.body._id;
   
-    Place.findByIdAndRemove(id)
+    Place.findByIdAndRemove(_id)
       .then(data => {
         if (!data) {
           res.status(404).send({
-            message: `No se puede borrar el lugar con el id=${id}.`
+            message: `No se puede borrar el lugar con el id=${_id}.`
           });
         } else {
           res.send({
@@ -92,7 +93,7 @@ exports.delete = (req, res) => {
       })
       .catch(err => {
         res.status(500).send({
-          message: "no se puede borrar el lugar con el id=" + id
+          message: "no se puede borrar el lugar con el id=" + _id
         });
       });
   };
